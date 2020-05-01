@@ -1,0 +1,52 @@
+﻿@page
+@model QueryPageModel
+@{
+    ViewData["Title"] = "QueryPage";
+}
+
+<br/>
+
+<div class="row justify-content-center">
+    <form method="post">
+        <div class="form-group row">
+            <div class="col-9">
+                <h2 class="text-info">Your Keyword:</h2>
+            </div>
+            <div class="col-9">
+                <input asp-for="CreatedQuery.QueryText" class="form-control" />
+            </div>
+            <div class="col-3">
+                <input type="submit" value="Find Audience" class="btn btn-primary form-control" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@if (Model.FoundInterests.Count > 0)
+{
+    <div class="row justify-content-center">
+        <br/>
+        <h1 class="text-info"> '@Model.CreatedQuery.QueryText':</h1>
+        <br/>
+    </div>
+
+    <div class="row justify-content-center">
+        <form>
+            @foreach (FBTargeting.Models.Interest interest in Model.FoundInterests)
+            {
+                if (interest.Name != "" && interest.AudienceSize != "")
+                {
+                    <br/>
+                    <div style="text-align: center">
+                        <a href=@interest.GoogleSearchUrl class="btn btn-outline-primary btn-lg" role="button" target="_blank">@interest.Name</a>
+                        <h5 class="text-center">@interest.AudienceSize</h5>
+                        <h6 class="text-center">@interest.Category</h6>
+                    </div>
+                    <br/>
+                }
+            }
+        </form>
+    </div>
+}
+
