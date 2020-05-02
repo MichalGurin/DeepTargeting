@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using DeepTargeting.Models;
 using Microsoft.AspNetCore.Mvc;
 using DeepTargeting.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeepTargeting.Controllers
 {
+    [Authorize]
     public class QueryController : Controller
     {
         private readonly IQueryService queryService;
