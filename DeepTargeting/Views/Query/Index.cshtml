@@ -1,13 +1,12 @@
-﻿@page
-@model QueryPageModel
+﻿@model QueryViewModel
 @{
-    ViewData["Title"] = "QueryPage";
+    ViewData["Title"] = "Query";
 }
 
-<br/>
+<br />
 
 <div class="row justify-content-center">
-    <form method="post">
+    <form asp-action="FindKeywordInterests" method="post">
         <div class="form-group row">
             <div class="col-9">
                 <h2 class="text-info">Your Keyword:</h2>
@@ -26,9 +25,9 @@
 @if (Model.FoundInterests.Count > 0)
 {
     <div class="row justify-content-center">
-        <br/>
+        <br />
         <h1 class="text-info"> '@Model.CreatedQuery.QueryText':</h1>
-        <br/>
+        <br />
     </div>
 
     <div class="row justify-content-center">
@@ -37,13 +36,13 @@
             {
                 if (interest.Name != "" && interest.AudienceSize != "")
                 {
-                    <br/>
+                    <br />
                     <div style="text-align: center">
                         <a href=@interest.GoogleSearchUrl class="btn btn-outline-primary btn-lg" role="button" target="_blank">@interest.Name</a>
                         <h5 class="text-center">@interest.AudienceSize</h5>
                         <h6 class="text-center">@interest.Category</h6>
                     </div>
-                    <br/>
+                    <br />
                 }
             }
         </form>
