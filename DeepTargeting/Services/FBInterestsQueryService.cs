@@ -1,10 +1,8 @@
 ﻿using FBTargeting.Algorithms;
 using FBTargeting.Models;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -18,7 +16,8 @@ namespace DeepTargeting.Services
             List<Interest> foundInterests = new List<Interest>();
             if (queryText != "")
             {
-                string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10000&locale=en_US&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
+                string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10&locale=en_US&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
+                //string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10&locale=sk&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
                 string responseString = GetRequest(url);
                 responseString = responseString.Remove(0, 8);
                 responseString = responseString.Remove(responseString.Length - 1);
