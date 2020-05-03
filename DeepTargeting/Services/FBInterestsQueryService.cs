@@ -11,14 +11,14 @@ namespace DeepTargeting.Services
 {
     public class FBInterestsQueryService : IQueryService
     {
-        public List<Interest> GetKeywordInterests(string queryText)
+        public async Task<List<Interest>> GetKeywordInterests(string queryText)
         {
             List<Interest> foundInterests = new List<Interest>();
             if (queryText != "")
             {
                 string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10&locale=en_US&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
                 //string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10&locale=sk&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
-                string responseString = GetRequest(url);
+                string responseString = await GetRequestAsync(url);
                 responseString = responseString.Remove(0, 8);
                 responseString = responseString.Remove(responseString.Length - 1);
 
@@ -61,6 +61,19 @@ namespace DeepTargeting.Services
             using (StreamReader reader = new StreamReader(stream))
             {
                 return reader.ReadToEnd();
+            }
+        }
+
+        private async Task<string> GetRequestAsync(string uri)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return await reader.ReadToEndAsync();
             }
         }
     }
