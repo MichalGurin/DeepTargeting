@@ -29,7 +29,7 @@ namespace DeepTargeting.Controllers
         public async Task<IActionResult> FindKeywordInterests(QueryViewModel queryViewModel)
         {
             viewModel.CreatedQuery = queryViewModel.CreatedQuery;
-            viewModel.FoundInterests = await queryService.GetKeywordInterests(queryViewModel.CreatedQuery.QueryText);
+            viewModel.FoundInterests = await queryService.GetKeywordInterests(queryViewModel.CreatedQuery);
 
             return RedirectToAction("Index");
         }

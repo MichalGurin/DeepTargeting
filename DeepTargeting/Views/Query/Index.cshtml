@@ -1,7 +1,5 @@
 ﻿@model QueryViewModel
 
-<br />
-
 <div class="row justify-content-center">
     <form asp-action="FindKeywordInterests" method="post">
         <div class="form-group row">
@@ -14,10 +12,15 @@
             <div class="col-3">
                 <input type="submit" value="Find Audience" class="btn btn-primary form-control" />
             </div>
+            <div class="col-3">
+                <select class="selectpicker" id="language" asp-for="CreatedQuery.Language">
+                    <option value="en_US">en_US</option>
+                    <option value="sk">sk</option>
+                </select>
+            </div>
         </div>
     </form>
 </div>
-
 
 @if (Model.FoundInterests.Count > 0)
 {

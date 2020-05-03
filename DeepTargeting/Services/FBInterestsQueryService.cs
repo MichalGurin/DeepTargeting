@@ -11,13 +11,12 @@ namespace DeepTargeting.Services
 {
     public class FBInterestsQueryService : IQueryService
     {
-        public async Task<List<Interest>> GetKeywordInterests(string queryText)
+        public async Task<List<Interest>> GetKeywordInterests(Query query)
         {
             List<Interest> foundInterests = new List<Interest>();
-            if (queryText != "")
+            if (query.QueryText != "")
             {
-                string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10&locale=en_US&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
-                //string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10&locale=sk&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
+                string url = "https://graph.facebook.com/search?type=adinterest&q=[" + query.QueryText + "]&limit=10&locale=" + query.Language + "&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
                 string responseString = await GetRequestAsync(url);
                 responseString = responseString.Remove(0, 8);
                 responseString = responseString.Remove(responseString.Length - 1);
@@ -35,7 +34,7 @@ namespace DeepTargeting.Services
                         else if (row.Key == "audience_size")
                         {
                             double audienceSize = double.Parse(row.Value.ToString());
-                            string humanizedNumber = audienceSize.Nice(5);
+                            string humanizedNumber = audienceSize.Nice(4);
                             newInterest.AudienceSize = humanizedNumber;
                         }
                         else if (row.Key == "topic")
