@@ -42,6 +42,15 @@ namespace DeepTargeting
                 options.Password.RequiredUniqueChars = 1;
             });
 
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                IConfigurationSection googleAuthNSection =
+                Configuration.GetSection("Authentication:Google");
+
+                options.ClientId = googleAuthNSection["ClientId"];
+                options.ClientSecret = googleAuthNSection["ClientSecret"];
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
