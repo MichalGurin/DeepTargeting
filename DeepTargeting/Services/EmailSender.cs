@@ -23,20 +23,11 @@ namespace DeepTargeting.Services
             return Execute(Options.SendGridKey, subject, message, email);
         }
 
-        public Task Execute(string apiKey, string subject, string message, string email)
+        public Task<Response> Execute(string apiKey, string subject, string message, string email)
         {
             var client = new SendGridClient(apiKey);
-            //var msg = new SendGridMessage()
-            //{
-            //    From = new EmailAddress("Joe@contoso.com", Options.SendGridUser),
-            //    Subject = subject,
-            //    PlainTextContent = message,
-            //    HtmlContent = message,
-            //};
-
-            var msg = MailHelper.CreateSingleEmail(new EmailAddress("michal.gurin@centrum.sk", Options.SendGridUser), new EmailAddress(email, "User"), subject, message, message);
-            //msg.AddTo(new EmailAddress(email));
-
+            var msg = MailHelper.CreateSingleEmail(new EmailAddress("michal.gurin@centrum.sk", Options.SendGridUser), new EmailAddress(email, email), "DeepTargeting account verification", message, message);
+            
             // Disable click tracking.
             // See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
             msg.SetClickTracking(false, false);

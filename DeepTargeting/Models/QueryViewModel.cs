@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
-using FBTargeting.Models;
+using DeepTargeting.Models;
 
 
 namespace DeepTargeting.Models

@@ -1,5 +1,4 @@
 ﻿using DeepTargeting.Models;
-using FBTargeting.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

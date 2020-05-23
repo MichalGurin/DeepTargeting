@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FBTargeting.Models
+namespace DeepTargeting.Models
 {
     public class Query
     {
@@ -12,5 +12,16 @@ namespace FBTargeting.Models
         public string QueryText { get; set; } = "";
 
         public string Language { get; set; } = "en-us";
+
+        public Query()
+        {
+
+        }
+
+        public Query(string queryText, string language)
+        {
+            this.QueryText = queryText;
+            this.Language = language;
+        }
     }
 }

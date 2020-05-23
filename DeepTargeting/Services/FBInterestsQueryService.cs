@@ -1,5 +1,5 @@
 ﻿using FBTargeting.Algorithms;
-using FBTargeting.Models;
+using DeepTargeting.Models;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
