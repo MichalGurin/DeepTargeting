@@ -55,5 +55,13 @@
             }
         </form>
     </div>
+    
+    <br />
+    <div class="row justify-content-center">
+        <button class="btn btn-secondary" asp-action="ExportExcel" onclick="location.href='@Url.Action("ExportExcel", "Query")'">
+            Export to Excel
+        </button>
+    </div>
+
 }
 

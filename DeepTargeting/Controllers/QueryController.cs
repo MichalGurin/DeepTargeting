@@ -3,6 +3,8 @@ using DeepTargeting.Models;
 using Microsoft.AspNetCore.Mvc;
 using DeepTargeting.Services;
 using Microsoft.AspNetCore.Authorization;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace DeepTargeting.Controllers
 {
@@ -29,6 +31,38 @@ namespace DeepTargeting.Controllers
             viewModel.FoundInterests = await queryService.GetKeywordInterests(queryViewModel.CreatedQuery);
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult ExportExcel()
+        {
+            using (XLWorkbook workbook = new XLWorkbook())
+            {
+                IXLWorksheet worksheet = workbook.Worksheets.Add(viewModel.CreatedQuery.QueryText);
+                int currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "Name";
+                worksheet.Cell(currentRow, 2).Value = "Audience Size";
+                worksheet.Cell(currentRow, 3).Value = "Category";
+                foreach (Interest interest in viewModel.FoundInterests)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = interest.Name;
+                    worksheet.Cell(currentRow, 2).Value = interest.AudienceSize;
+                    worksheet.Cell(currentRow, 3).Value = interest.Category;
+                }
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    byte[] byteContent = stream.ToArray();
+
+                    FileContentResult fileContent = File(
+                        byteContent,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "KeywordExport.xlsx");
+
+                    return fileContent;
+                }
+            }
         }
     }
 }
