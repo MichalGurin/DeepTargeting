@@ -33,6 +33,12 @@ namespace DeepTargeting.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public void ResetQuery()
+        {
+            viewModel = new QueryViewModel();
+        }
+
         public IActionResult ExportExcel()
         {
             using (XLWorkbook workbook = new XLWorkbook())

@@ -15,8 +15,8 @@
         <div class="form-group row justify-content-center">
             <div class="col-3">
                 <select class="selectpicker" id="language" asp-for="CreatedQuery.Language">
-                    <option value="en_US">en_US</option>
-                    <option value="sk">sk</option>
+                    <option value="en_US">en-US</option>
+                    <option value="sk_SK">sk</option>
                 </select>
             </div>
         </div>
@@ -55,7 +55,7 @@
             }
         </form>
     </div>
-    
+
     <br />
     <div class="row justify-content-center">
         <button class="btn btn-secondary" asp-action="ExportExcel" onclick="location.href='@Url.Action("ExportExcel", "Query")'">
@@ -64,4 +64,20 @@
     </div>
 
 }
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ResetQuery")",
+            dataType: "text",
+            success: function (msg) {
+            },
+            error: function (req, status, error) {
+            }
+        });
+    });
+</script>
 
