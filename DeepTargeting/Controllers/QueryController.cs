@@ -15,6 +15,8 @@ namespace DeepTargeting.Controllers
 
         private static QueryViewModel viewModel = new QueryViewModel();
 
+        private static QueryViewModel viewModelCopyForExcel = new QueryViewModel();
+
         public QueryController(IQueryService queryService)
         {
             this.queryService = queryService;
@@ -30,6 +32,8 @@ namespace DeepTargeting.Controllers
             viewModel.CreatedQuery = queryViewModel.CreatedQuery;
             viewModel.FoundInterests = await queryService.GetKeywordInterests(queryViewModel.CreatedQuery);
 
+            viewModelCopyForExcel = (QueryViewModel)viewModel.Clone();
+
             return RedirectToAction("Index");
         }
 
@@ -43,12 +47,12 @@ namespace DeepTargeting.Controllers
         {
             using (XLWorkbook workbook = new XLWorkbook())
             {
-                IXLWorksheet worksheet = workbook.Worksheets.Add(viewModel.CreatedQuery.QueryText);
+                IXLWorksheet worksheet = workbook.Worksheets.Add(viewModelCopyForExcel.CreatedQuery.QueryText);
                 int currentRow = 1;
                 worksheet.Cell(currentRow, 1).Value = "Name";
                 worksheet.Cell(currentRow, 2).Value = "Audience Size";
                 worksheet.Cell(currentRow, 3).Value = "Category";
-                foreach (Interest interest in viewModel.FoundInterests)
+                foreach (Interest interest in viewModelCopyForExcel.FoundInterests)
                 {
                     currentRow++;
                     worksheet.Cell(currentRow, 1).Value = interest.Name;
