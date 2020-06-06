@@ -9,6 +9,7 @@ using SendGrid.Helpers.Mail;
 
 namespace DeepTargeting.Services
 {
+    //: IIdentityMessageService
     public class EmailSender : IEmailSender
     {
         public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
