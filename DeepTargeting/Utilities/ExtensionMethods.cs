@@ -9,7 +9,7 @@ namespace FBTargeting.Algorithms
     {
         static string[] prefixes = { "f", "a", "p", "n", "μ", "m", string.Empty, "k", "M", "G", "T", "P", "E" };
 
-        public static string Nice(this double x, int significant_digits)
+        public static string Humanize(this double x, int significant_digits)
         {
             //Check for special numbers and non-numbers
             if (double.IsInfinity(x) || double.IsNaN(x) || x == 0 || significant_digits <= 0)

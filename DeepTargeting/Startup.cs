@@ -27,8 +27,6 @@ namespace DeepTargeting
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IQueryService, FBInterestsQueryService>();
-
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -50,6 +48,9 @@ namespace DeepTargeting
                 options.ClientId = googleAuthNSection["ClientId"];
                 options.ClientSecret = googleAuthNSection["ClientSecret"];
             });
+
+            services.AddScoped<IQueryService, FBInterestsQueryService>();
+            services.AddScoped<IQueryExportService, ExcelExporter>();
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);

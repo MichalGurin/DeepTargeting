@@ -13,13 +13,16 @@ namespace DeepTargeting.Controllers
     {
         private readonly IQueryService queryService;
 
+        private readonly IQueryExportService exportService;
+
         private static QueryViewModel viewModel = new QueryViewModel();
 
         private static QueryViewModel viewModelCopyForExcel = new QueryViewModel();
 
-        public QueryController(IQueryService queryService)
+        public QueryController(IQueryService queryService, IQueryExportService exportService)
         {
             this.queryService = queryService;
+            this.exportService = exportService;
         }
 
         public IActionResult Index()
@@ -45,34 +48,9 @@ namespace DeepTargeting.Controllers
 
         public IActionResult ExportExcel()
         {
-            using (XLWorkbook workbook = new XLWorkbook())
-            {
-                IXLWorksheet worksheet = workbook.Worksheets.Add(viewModelCopyForExcel.CreatedQuery.QueryText);
-                int currentRow = 1;
-                worksheet.Cell(currentRow, 1).Value = "Name";
-                worksheet.Cell(currentRow, 2).Value = "Audience Size";
-                worksheet.Cell(currentRow, 3).Value = "Category";
-                foreach (Interest interest in viewModelCopyForExcel.FoundInterests)
-                {
-                    currentRow++;
-                    worksheet.Cell(currentRow, 1).Value = interest.Name;
-                    worksheet.Cell(currentRow, 2).Value = interest.AudienceSize;
-                    worksheet.Cell(currentRow, 3).Value = interest.Category;
-                }
-
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    workbook.SaveAs(stream);
-                    byte[] byteContent = stream.ToArray();
-
-                    FileContentResult fileContent = File(
-                        byteContent,
+            return File(exportService.Export(viewModelCopyForExcel),
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "KeywordExport.xlsx");
-
-                    return fileContent;
-                }
-            }
+                        viewModelCopyForExcel.CreatedQuery.QueryText + "Export.xlsx");
         }
     }
 }

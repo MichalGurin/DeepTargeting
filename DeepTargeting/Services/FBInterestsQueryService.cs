@@ -34,7 +34,7 @@ namespace DeepTargeting.Services
                         else if (row.Key == "audience_size")
                         {
                             double audienceSize = double.Parse(row.Value.ToString());
-                            string humanizedNumber = audienceSize.Nice(4);
+                            string humanizedNumber = audienceSize.Humanize(4);
                             newInterest.AudienceSize = humanizedNumber;
                         }
                         else if (row.Key == "topic")
