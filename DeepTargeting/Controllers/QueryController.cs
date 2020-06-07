@@ -3,24 +3,25 @@ using DeepTargeting.Models;
 using Microsoft.AspNetCore.Mvc;
 using DeepTargeting.Services;
 using Microsoft.AspNetCore.Authorization;
-using ClosedXML.Excel;
-using System.IO;
+using DeepTargeting.Data;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace DeepTargeting.Controllers
 {
     [Authorize]
     public class QueryController : Controller
     {
+        private readonly ApplicationDbContext dbContext;
         private readonly IQueryService queryService;
-
         private readonly IQueryExportService exportService;
 
         private static QueryViewModel viewModel = new QueryViewModel();
-
         private static QueryViewModel viewModelCopyForExcel = new QueryViewModel();
 
-        public QueryController(IQueryService queryService, IQueryExportService exportService)
+        public QueryController(ApplicationDbContext dbContext, IQueryService queryService, IQueryExportService exportService)
         {
+            this.dbContext = dbContext;
             this.queryService = queryService;
             this.exportService = exportService;
         }
@@ -34,6 +35,10 @@ namespace DeepTargeting.Controllers
         {
             viewModel.CreatedQuery = queryViewModel.CreatedQuery;
             viewModel.FoundInterests = await queryService.GetKeywordInterests(queryViewModel.CreatedQuery);
+
+            viewModel.CreatedQuery.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await dbContext.QueryTexts.AddAsync(viewModel.CreatedQuery);
+            await dbContext.SaveChangesAsync();
 
             viewModelCopyForExcel = (QueryViewModel)viewModel.Clone();
 

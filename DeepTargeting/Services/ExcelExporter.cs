@@ -1,11 +1,7 @@
 ﻿using ClosedXML.Excel;
 using DeepTargeting.Models;
-using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DeepTargeting.Services
 {

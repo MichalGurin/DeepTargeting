@@ -19,11 +19,12 @@ namespace DeepTargeting.Models
 
         public Query()
         {
-
+            Id = new Guid();
         }
 
         public Query(string queryText, string language)
         {
+            Id = new Guid();
             this.QueryText = queryText;
             this.Language = language;
         }
