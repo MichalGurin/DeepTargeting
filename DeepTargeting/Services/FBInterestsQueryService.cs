@@ -1,11 +1,12 @@
-﻿using FBTargeting.Algorithms;
-using DeepTargeting.Models;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+
+using DeepTargeting.Models;
+using DeepTargeting.Utilities;
 
 namespace DeepTargeting.Services
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FBTargeting.Algorithms
+namespace DeepTargeting.Utilities
 {
     static class Extensions
     {

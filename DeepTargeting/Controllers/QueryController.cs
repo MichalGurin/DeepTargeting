@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
-using DeepTargeting.Models;
-using Microsoft.AspNetCore.Mvc;
-using DeepTargeting.Services;
-using Microsoft.AspNetCore.Authorization;
-using DeepTargeting.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+
+using DeepTargeting.Models;
+using DeepTargeting.Data;
+using DeepTargeting.Services;
+using System.Linq;
 
 namespace DeepTargeting.Controllers
 {
@@ -28,6 +31,14 @@ namespace DeepTargeting.Controllers
 
         public IActionResult Index()
         {
+            List<Query> usersPreviousQueries = dbContext.AllQueries.Where(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
+
+            foreach (Query item in usersPreviousQueries)
+            {
+                viewModel.PreviousQueries.Add(item.QueryText);
+            }
+
+            viewModel.PreviousQueries = viewModel.PreviousQueries.Distinct().ToList();
             return View(viewModel);
         }
 
@@ -37,12 +48,21 @@ namespace DeepTargeting.Controllers
             viewModel.FoundInterests = await queryService.GetKeywordInterests(queryViewModel.CreatedQuery);
 
             viewModel.CreatedQuery.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await dbContext.QueryTexts.AddAsync(viewModel.CreatedQuery);
+            await dbContext.AllQueries.AddAsync(viewModel.CreatedQuery);
             await dbContext.SaveChangesAsync();
 
             viewModelCopyForExcel = (QueryViewModel)viewModel.Clone();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public void ReloadPageWithQuery(string queryText)
+        {
+            viewModel = new QueryViewModel();
+            viewModel.CreatedQuery = new Query();
+            viewModel.CreatedQuery.QueryText = queryText;
+            RedirectToAction("Index");
         }
 
         [HttpPost]
