@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 using DeepTargeting.Models;
-
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace DeepTargeting.Data
 {
@@ -21,6 +22,11 @@ namespace DeepTargeting.Data
         {
             await AllQueries.AddAsync(query);
             await SaveChangesAsync();
+        }
+
+        public List<Query> GetQueriesOfUser(ClaimsPrincipal user)
+        {
+            return AllQueries.Where(x => x.UserId == user.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
         }
 
         public bool QueryNotInDB(Query query)
