@@ -52,8 +52,11 @@ namespace DeepTargeting.Controllers
             viewModel.FoundInterests = await queryService.GetKeywordInterests(queryViewModel.CreatedQuery);
 
             viewModel.CreatedQuery.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await dbContext.AllQueries.AddAsync(viewModel.CreatedQuery);
-            await dbContext.SaveChangesAsync();
+
+            if (dbContext.QueryNotInDB(viewModel.CreatedQuery))
+            {
+                await dbContext.AddQueryToDB(viewModel.CreatedQuery);
+            }
 
             viewModelCopyForExcel = (QueryViewModel)viewModel.Clone();
 
@@ -63,25 +66,31 @@ namespace DeepTargeting.Controllers
         [HttpPost]
         public async Task<IActionResult> ReloadPageWithQuery(string queryText)
         {
+            if (queryText.Length == 0)
+            {
+                return BadRequest();
+            }
+
             viewModel = new QueryViewModel();
             viewModel.CreatedQuery = new Query(queryText, "en_us");
 
             viewModel.FoundInterests = await queryService.GetKeywordInterests(viewModel.CreatedQuery);
-
             viewModel.CreatedQuery.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await dbContext.AllQueries.AddAsync(viewModel.CreatedQuery);
-            await dbContext.SaveChangesAsync();
+
+            if (dbContext.QueryNotInDB(viewModel.CreatedQuery))
+            {
+                await dbContext.AddQueryToDB(viewModel.CreatedQuery);
+            }
 
             viewModelCopyForExcel = (QueryViewModel)viewModel.Clone();
 
             List<Query> usersPreviousQueries = dbContext.AllQueries.Where(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
+            usersPreviousQueries = usersPreviousQueries.Distinct().ToList();
 
-            foreach (Query item in usersPreviousQueries)
+            foreach (Query query in usersPreviousQueries)
             {
-                viewModel.PreviousQueries.Add(item.QueryText);
+                viewModel.PreviousQueries.Add(query.QueryText);
             }
-
-            viewModel.PreviousQueries = viewModel.PreviousQueries.Distinct().ToList();
 
             string redirectUrl = Url.Action("Index");
             return Json(new { redirectUrl });
@@ -95,8 +104,8 @@ namespace DeepTargeting.Controllers
         public IActionResult ExportExcel()
         {
             return File(exportService.Export(viewModelCopyForExcel),
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        viewModelCopyForExcel.CreatedQuery.QueryText + "Export.xlsx");
+                   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    viewModelCopyForExcel.CreatedQuery.QueryText + "Export.xlsx");
         }
     }
 }

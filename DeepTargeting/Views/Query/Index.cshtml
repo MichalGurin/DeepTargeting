@@ -90,13 +90,12 @@
     });
 
     function ReloadWithQuery(buttonText) {
-        //alert("Reloading");
             $.ajax({
             type: "POST",
             url: '@Url.Action("ReloadPageWithQuery")',
             data: { queryText: buttonText },
-                success: function (response) {
-                    window.location.replace(response.redirectUrl);
+            success: function (response) {
+                  window.location.replace(response.redirectUrl);
             },
             error: function (req, status, error) {
             }
