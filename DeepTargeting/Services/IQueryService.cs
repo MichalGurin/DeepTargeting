@@ -10,5 +10,7 @@ namespace DeepTargeting.Services
     public interface IQueryService
     {
         public Task<List<Interest>> GetKeywordInterests(Query query);
+
+        public Task<List<Interest>> GetKeywordInterests(string queryText);
     }
 }

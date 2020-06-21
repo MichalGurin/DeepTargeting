@@ -4,7 +4,7 @@
     <form asp-action="FindKeywordInterests" method="post">
         <div class="form-group row justify-content-center">
             <div class="col-12">
-                <h2 class="text-info">Your Keyword</h2>
+                <h2 class="text-info">Your Keyword:</h2>
             </div>
 
             <div class="col-12">
@@ -34,7 +34,7 @@
 <div class="row justify-content-center">
     @foreach (string query in Model.PreviousQueries)
     {
-        <button style="margin:5px" onclick="ReloadWithQuery(Text)">@query</button>
+        <button style="margin:5px" onclick="ReloadWithQuery('@query')">@query</button>
     }
 </div>
 }
@@ -93,8 +93,8 @@
         //alert("Reloading");
             $.ajax({
             type: "POST",
-            url: "@Url.Action("ReloadPageWithQuery")",
-            data: buttonText,
+            url: '@Url.Action("ReloadPageWithQuery")',
+            data: { queryText: buttonText },
             success: function (msg) {
             },
             error: function (req, status, error) {

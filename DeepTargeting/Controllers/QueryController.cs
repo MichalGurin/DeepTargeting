@@ -19,7 +19,7 @@ namespace DeepTargeting.Controllers
         private readonly IQueryService queryService;
         private readonly IQueryExportService exportService;
 
-        private static QueryViewModel viewModel = new QueryViewModel();
+        private static QueryViewModel viewModel /*= new QueryViewModel()*/;
         private static QueryViewModel viewModelCopyForExcel = new QueryViewModel();
 
         public QueryController(ApplicationDbContext dbContext, IQueryService queryService, IQueryExportService exportService)
@@ -27,6 +27,11 @@ namespace DeepTargeting.Controllers
             this.dbContext = dbContext;
             this.queryService = queryService;
             this.exportService = exportService;
+
+            if (viewModel == null)
+            {
+                viewModel = new QueryViewModel();
+            }
         }
 
         public IActionResult Index()
@@ -57,15 +62,33 @@ namespace DeepTargeting.Controllers
         }
 
         [HttpPost]
-        public void ReloadPageWithQuery(string queryText)
+        public async Task<IActionResult> ReloadPageWithQuery(string queryText)
         {
             viewModel = new QueryViewModel();
             viewModel.CreatedQuery = new Query();
             viewModel.CreatedQuery.QueryText = queryText;
-            RedirectToAction("Index");
+
+            viewModel.FoundInterests = await queryService.GetKeywordInterests(queryText);
+
+            viewModel.CreatedQuery.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await dbContext.AllQueries.AddAsync(viewModel.CreatedQuery);
+            await dbContext.SaveChangesAsync();
+
+            viewModelCopyForExcel = (QueryViewModel)viewModel.Clone();
+
+            List<Query> usersPreviousQueries = dbContext.AllQueries.Where(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
+
+            foreach (Query item in usersPreviousQueries)
+            {
+                viewModel.PreviousQueries.Add(item.QueryText);
+            }
+
+            viewModel.PreviousQueries = viewModel.PreviousQueries.Distinct().ToList();
+
+            //return View(viewModel);
+            return await FindKeywordInterests(viewModel);
         }
 
-        [HttpPost]
         public void ResetQuery()
         {
             viewModel = new QueryViewModel();
