@@ -11,6 +11,6 @@ namespace DeepTargeting.Services
     {
         public Task<List<Interest>> GetKeywordInterests(Query query);
 
-        public Task<List<Interest>> GetKeywordInterests(string queryText);
+        //public Task<List<Interest>> GetKeywordInterests(string queryText);
     }
 }

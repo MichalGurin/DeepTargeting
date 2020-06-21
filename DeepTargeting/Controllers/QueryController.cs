@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 using DeepTargeting.Models;
 using DeepTargeting.Data;
@@ -19,7 +18,7 @@ namespace DeepTargeting.Controllers
         private readonly IQueryService queryService;
         private readonly IQueryExportService exportService;
 
-        private static QueryViewModel viewModel /*= new QueryViewModel()*/;
+        private static QueryViewModel viewModel;
         private static QueryViewModel viewModelCopyForExcel = new QueryViewModel();
 
         public QueryController(ApplicationDbContext dbContext, IQueryService queryService, IQueryExportService exportService)
@@ -65,10 +64,9 @@ namespace DeepTargeting.Controllers
         public async Task<IActionResult> ReloadPageWithQuery(string queryText)
         {
             viewModel = new QueryViewModel();
-            viewModel.CreatedQuery = new Query();
-            viewModel.CreatedQuery.QueryText = queryText;
+            viewModel.CreatedQuery = new Query(queryText, "en_us");
 
-            viewModel.FoundInterests = await queryService.GetKeywordInterests(queryText);
+            viewModel.FoundInterests = await queryService.GetKeywordInterests(viewModel.CreatedQuery);
 
             viewModel.CreatedQuery.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await dbContext.AllQueries.AddAsync(viewModel.CreatedQuery);
@@ -85,8 +83,8 @@ namespace DeepTargeting.Controllers
 
             viewModel.PreviousQueries = viewModel.PreviousQueries.Distinct().ToList();
 
-            //return View(viewModel);
-            return await FindKeywordInterests(viewModel);
+            string redirectUrl = Url.Action("Index");
+            return Json(new { redirectUrl });
         }
 
         public void ResetQuery()

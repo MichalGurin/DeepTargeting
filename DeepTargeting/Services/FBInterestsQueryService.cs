@@ -51,44 +51,44 @@ namespace DeepTargeting.Services
             return foundInterests;
         }
 
-        public async Task<List<Interest>> GetKeywordInterests(string queryText)
-        {
-            List<Interest> foundInterests = new List<Interest>();
-            if (queryText != "")
-            {
-                string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10&locale=" + "en_us" + "&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
-                string responseString = await GetRequestAsync(url);
-                responseString = responseString.Remove(0, 8);
-                responseString = responseString.Remove(responseString.Length - 1);
+        //public async Task<List<Interest>> GetKeywordInterests(string queryText)
+        //{
+        //    List<Interest> foundInterests = new List<Interest>();
+        //    if (queryText != "")
+        //    {
+        //        string url = "https://graph.facebook.com/search?type=adinterest&q=[" + queryText + "]&limit=10&locale=" + "en_us" + "&access_token=2334601333305211|ixo93bORPMZUVQVdib6xNSHtG-Y";
+        //        string responseString = await GetRequestAsync(url);
+        //        responseString = responseString.Remove(0, 8);
+        //        responseString = responseString.Remove(responseString.Length - 1);
 
-                JArray interests = JArray.Parse(responseString);
-                foreach (JObject interest in interests)
-                {
-                    Interest newInterest = new Interest();
-                    foreach (KeyValuePair<string, JToken> row in interest)
-                    {
-                        if (row.Key == "name")
-                        {
-                            newInterest.Name = row.Value.ToString();
-                        }
-                        else if (row.Key == "audience_size")
-                        {
-                            double audienceSize = double.Parse(row.Value.ToString());
-                            string humanizedNumber = audienceSize.Humanize(4);
-                            newInterest.AudienceSize = humanizedNumber;
-                        }
-                        else if (row.Key == "topic")
-                        {
-                            newInterest.Category = row.Value.ToString();
-                        }
-                    }
-                    newInterest.GoogleSearchUrl = "https://www.google.com/search?q=" + Regex.Replace(newInterest.Name, @"\s+", "+");
-                    foundInterests.Add(newInterest);
-                }
-            }
+        //        JArray interests = JArray.Parse(responseString);
+        //        foreach (JObject interest in interests)
+        //        {
+        //            Interest newInterest = new Interest();
+        //            foreach (KeyValuePair<string, JToken> row in interest)
+        //            {
+        //                if (row.Key == "name")
+        //                {
+        //                    newInterest.Name = row.Value.ToString();
+        //                }
+        //                else if (row.Key == "audience_size")
+        //                {
+        //                    double audienceSize = double.Parse(row.Value.ToString());
+        //                    string humanizedNumber = audienceSize.Humanize(4);
+        //                    newInterest.AudienceSize = humanizedNumber;
+        //                }
+        //                else if (row.Key == "topic")
+        //                {
+        //                    newInterest.Category = row.Value.ToString();
+        //                }
+        //            }
+        //            newInterest.GoogleSearchUrl = "https://www.google.com/search?q=" + Regex.Replace(newInterest.Name, @"\s+", "+");
+        //            foundInterests.Add(newInterest);
+        //        }
+        //    }
 
-            return foundInterests;
-        }
+        //    return foundInterests;
+        //}
 
         private async Task<string> GetRequestAsync(string uri)
         {

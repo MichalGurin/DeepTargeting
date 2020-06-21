@@ -95,7 +95,8 @@
             type: "POST",
             url: '@Url.Action("ReloadPageWithQuery")',
             data: { queryText: buttonText },
-            success: function (msg) {
+                success: function (response) {
+                    window.location.replace(response.redirectUrl);
             },
             error: function (req, status, error) {
             }
