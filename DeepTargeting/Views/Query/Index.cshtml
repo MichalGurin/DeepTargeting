@@ -1,4 +1,5 @@
 ﻿@model QueryViewModel
+@using DeepTargeting.Models
 
 <div class="row justify-content-center">
     <form asp-action="FindKeywordInterests" method="post">
@@ -50,7 +51,7 @@
 
     <div class="row justify-content-center">
         <form>
-            @foreach (DeepTargeting.Models.Interest interest in Model.FoundInterests)
+            @foreach (Interest interest in Model.FoundInterests)
             {
                 if (interest.Name != "" && interest.AudienceSize != "")
                 {

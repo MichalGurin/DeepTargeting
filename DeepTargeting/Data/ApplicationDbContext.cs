@@ -16,28 +16,8 @@ namespace DeepTargeting.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
         }
 
-        public async Task AddQueryToDB(Query query)
-        {
-            await AllQueries.AddAsync(query);
-            await SaveChangesAsync();
-        }
-
-        public List<Query> GetQueriesOfUser(ClaimsPrincipal user)
-        {
-            return AllQueries.Where(x => x.UserId == user.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
-        }
-
-        public bool QueryNotInDB(Query query)
-        {
-            if (query.QueryText == "")
-            {
-                return false;
-            }
-
-            return AllQueries.Where(q => q.QueryText == query.QueryText &&
-            q.UserId == query.UserId).ToList().Count == 0;
-        }
     }
 }

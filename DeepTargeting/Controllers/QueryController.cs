@@ -14,16 +14,16 @@ namespace DeepTargeting.Controllers
     [Authorize]
     public class QueryController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
+        private readonly IQueriesRepository queriesRepo;
         private readonly IQueryService queryService;
         private readonly IQueryExportService exportService;
 
         private static QueryViewModel viewModel;
         private static QueryViewModel viewModelCopyForExcel;
 
-        public QueryController(ApplicationDbContext dbContext, IQueryService queryService, IQueryExportService exportService)
+        public QueryController(IQueriesRepository queriesRepo, IQueryService queryService, IQueryExportService exportService)
         {
-            this.dbContext = dbContext;
+            this.queriesRepo = queriesRepo;
             this.queryService = queryService;
             this.exportService = exportService;
 
@@ -35,7 +35,7 @@ namespace DeepTargeting.Controllers
 
         public IActionResult Index()
         {
-            List<Query> usersPreviousQueries = dbContext.GetQueriesOfUser(User); 
+            List<Query> usersPreviousQueries = queriesRepo.GetQueriesOfUser(User); 
 
             foreach (Query query in usersPreviousQueries)
             {
@@ -46,15 +46,16 @@ namespace DeepTargeting.Controllers
             return View(viewModel);
         }
 
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> FindKeywordInterests(QueryViewModel queryViewModel)
         {
             viewModel.CreatedQuery = queryViewModel.CreatedQuery;
             viewModel.FoundInterests = await queryService.GetKeywordInterests(queryViewModel.CreatedQuery);
             viewModel.CreatedQuery.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (dbContext.QueryNotInDB(viewModel.CreatedQuery))
+            if (queriesRepo.QueryNotInDB(viewModel.CreatedQuery))
             {
-                await dbContext.AddQueryToDB(viewModel.CreatedQuery);
+                await queriesRepo.AddQueryToDBAsync(viewModel.CreatedQuery);
             }
 
             viewModelCopyForExcel = (QueryViewModel)viewModel.Clone();
@@ -74,9 +75,9 @@ namespace DeepTargeting.Controllers
             viewModel.FoundInterests = await queryService.GetKeywordInterests(viewModel.CreatedQuery);
             viewModel.CreatedQuery.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (dbContext.QueryNotInDB(viewModel.CreatedQuery))
+            if (queriesRepo.QueryNotInDB(viewModel.CreatedQuery))
             {
-                await dbContext.AddQueryToDB(viewModel.CreatedQuery);
+                await queriesRepo.AddQueryToDBAsync(viewModel.CreatedQuery);
             }
 
             viewModelCopyForExcel = (QueryViewModel)viewModel.Clone();

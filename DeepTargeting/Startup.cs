@@ -52,6 +52,7 @@ namespace DeepTargeting
 
             services.AddScoped<IQueryService, FBInterestsQueryService>();
             services.AddScoped<IQueryExportService, ExcelExporter>();
+            services.AddScoped<IQueriesRepository, QueriesRepository>();
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
